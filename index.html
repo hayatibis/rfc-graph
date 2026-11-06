@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>rfc graph</title>
+    <meta name="description" content="Read an RFC with its whole reference graph in view. Starts at RFC 1, 7 April 1969." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23070a14'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23ffbe6e'/%3E%3Ccircle cx='16' cy='16' r='10' fill='none' stroke='%2370f0c8' stroke-dasharray='2 4'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap"
+    />
+  </head>
+  <body>
+    <canvas id="sky" aria-label="Reference graph of RFCs" role="img"></canvas>
+
+    <header class="bar">
+      <a class="brand" href="?rfc=1" data-rfc="1"><span class="mark" aria-hidden="true"></span>rfc graph</a>
+      <span id="tagline" class="tagline"></span>
+      <form id="open" class="open" role="search">
+        <label for="rfc-input" class="rfc-label">RFC</label>
+        <input id="rfc-input" inputmode="numeric" autocomplete="off" />
+        <button id="go" type="submit"></button>
+      </form>
+      <nav class="tools">
+        <button id="zoom-out" class="icon" type="button" aria-label="Zoom out">−</button>
+        <button id="zoom-in" class="icon" type="button" aria-label="Zoom in">+</button>
+        <button id="fit" type="button"></button>
+        <button id="lang" type="button"></button>
+        <button id="theme" class="icon" type="button">◐</button>
+      </nav>
+    </header>
+
+    <aside id="panel" class="panel">
+      <div class="tabs" role="tablist">
+        <button id="tab-story" role="tab" type="button"></button>
+        <button id="tab-read" role="tab" type="button"></button>
+      </div>
+      <section class="story">
+        <div id="card" class="card"></div>
+        <details id="history" class="history">
+          <summary id="history-title"></summary>
+          <div id="history-body"></div>
+        </details>
+      </section>
+      <section class="reader">
+        <h2 id="read-title" class="read-title"></h2>
+        <pre id="text"></pre>
+      </section>
+    </aside>
+
+    <footer class="legend">
+      <div class="eras">
+        <span>1969</span>
+        <span id="era-bar" class="era-bar" aria-hidden="true"></span>
+        <span>2026</span>
+        <span id="legend-years" class="muted"></span>
+      </div>
+      <ul class="kinds">
+        <li><i class="k norm"></i><span data-kind="norm"></span></li>
+        <li><i class="k info"></i><span data-kind="info"></span></li>
+        <li><i class="k obs"></i><span data-kind="obs"></span></li>
+        <li><i class="k upd"></i><span data-kind="upd"></span></li>
+        <li><i class="k mention"></i><span data-kind="mention"></span></li>
+      </ul>
+      <p id="made" class="made"></p>
+    </footer>
+
+    <div id="tip" class="tip" hidden></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

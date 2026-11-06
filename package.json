@@ -1,0 +1,30 @@
+{
+  "name": "rfc-graph",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read an RFC with its whole reference graph in view. Starts at RFC 1.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hayatibis/rfc-graph.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "d3-force": "^3.0.1",
+    "d3-quadtree": "^3.0.2"
+  },
+  "devDependencies": {
+    "@types/d3-force": "^3.0.10",
+    "@types/d3-quadtree": "^3.0.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.6",
+    "vitest": "^5.1.0"
+  }
+}
