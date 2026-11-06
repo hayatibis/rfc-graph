@@ -2,6 +2,8 @@
 
 Read an RFC with its whole reference graph in view.
 
+**Live:** https://rfc-graph.hayatibis.dev
+
 You open one RFC to check one thing. It points to another, which points to two more. This draws that graph while you read: each RFC is a star coloured by the year it came out, the lines are its references, and light runs from an RFC to the ones that build on it. It starts where the series started, at [RFC 1](https://www.rfc-editor.org/rfc/rfc1), 7 April 1969.
 
 Made for fun, alongside an essay on [hayatibis.dev](https://hayatibis.dev) about what RFCs are and why reading them is worth it.
