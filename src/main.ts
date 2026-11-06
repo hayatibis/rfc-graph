@@ -54,10 +54,64 @@ const sky = new Sky($<HTMLCanvasElement>('#sky'), {
   },
 });
 
-// On a wide screen the panel covers the right of the sky.
-const panelInset = () => sky.setInset(innerWidth > 860 ? $('#panel').offsetWidth + 32 : 0);
-addEventListener('resize', panelInset);
-panelInset();
+// ---- the panel: drag its left edge to resize, double-click or ⇥ to fold it away ----
+const root = document.documentElement;
+const wide = () => innerWidth > 860;
+const clampWidth = (w: number) => Math.round(Math.min(Math.max(w, 320), innerWidth * 0.72));
+let panelWidth = clampWidth(Number(store.get('panel-width')) || 456);
+let folded = store.get('panel') === 'collapsed';
+
+function layoutPanel(persist = false) {
+  panelWidth = clampWidth(panelWidth);
+  root.style.setProperty('--panel-w', `${folded ? 56 : panelWidth}px`);
+  if (folded) root.dataset.panel = 'collapsed';
+  else delete root.dataset.panel;
+  $('#collapse').setAttribute('aria-expanded', String(!folded));
+  // The sky centres itself in whatever the panel leaves uncovered.
+  sky.setInset(wide() ? (folded ? 56 : panelWidth) + 32 : 0);
+  if (persist) {
+    store.set('panel-width', String(panelWidth));
+    store.set('panel', folded ? 'collapsed' : 'open');
+  }
+}
+
+const grip = $('#grip');
+grip.addEventListener('pointerdown', (e) => {
+  grip.setPointerCapture(e.pointerId);
+  root.classList.add('resizing');
+  folded = false;
+});
+grip.addEventListener('pointermove', (e) => {
+  if (!root.classList.contains('resizing')) return;
+  panelWidth = innerWidth - e.clientX - 16;
+  layoutPanel();
+});
+const stopResize = () => {
+  if (!root.classList.contains('resizing')) return;
+  root.classList.remove('resizing');
+  layoutPanel(true);
+};
+grip.addEventListener('pointerup', stopResize);
+grip.addEventListener('pointercancel', stopResize);
+grip.addEventListener('dblclick', () => {
+  folded = !folded;
+  layoutPanel(true);
+});
+grip.addEventListener('keydown', (e) => {
+  const step = e.shiftKey ? 96 : 24;
+  if (e.key === 'ArrowLeft') panelWidth += step;
+  else if (e.key === 'ArrowRight') panelWidth -= step;
+  else return;
+  e.preventDefault();
+  folded = false;
+  layoutPanel(true);
+});
+$('#collapse').addEventListener('click', () => {
+  folded = !folded;
+  layoutPanel(true);
+});
+addEventListener('resize', () => layoutPanel());
+layoutPanel();
 
 function hydrate(id: number) {
   if (state.read.has(id)) sky.update(id, { read: true });

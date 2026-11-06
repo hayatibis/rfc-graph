@@ -96,5 +96,5 @@ export function citedBy(rfc: number, limit = 60): Promise<{ total: number; edges
 
 export function text(rfc: number): Promise<string> {
   // Old RFCs carry form feeds between pages; the reader doesn't need them.
-  return once(`txt:${rfc}`, async () => String(await get(`${EDITOR}/rfc${rfc}.txt`, 'text')).replace(/\f/g, ''));
+  return once(`txt:${rfc}`, async () => String(await get(`${EDITOR}/rfc${rfc}.txt`, 'text')).replace(/\f/g, '').replace(/^\s*\n/, ''));
 }
