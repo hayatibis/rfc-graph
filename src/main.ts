@@ -54,6 +54,11 @@ const sky = new Sky($<HTMLCanvasElement>('#sky'), {
   },
 });
 
+// On a wide screen the panel covers the right of the sky.
+const panelInset = () => sky.setInset(innerWidth > 860 ? $('#panel').offsetWidth + 32 : 0);
+addEventListener('resize', panelInset);
+panelInset();
+
 function hydrate(id: number) {
   if (state.read.has(id)) sky.update(id, { read: true });
   meta(id)
@@ -142,7 +147,8 @@ function renderCard(m: Meta | null) {
     return;
   }
   const esc = (s: string) => s.replace(/[&<>"]/g, (c) => `&#${c.charCodeAt(0)};`);
-  const facts = [m.authors.slice(0, 4).join(', ') + (m.authors.length > 4 ? ' …' : ''), m.date, m.status.toLowerCase(), m.pages ? t('pages', { n: m.pages }) : '']
+  const status = m.status.toLowerCase() === 'unknown' ? '' : m.status.toLowerCase();
+  const facts = [m.authors.slice(0, 4).join(', ') + (m.authors.length > 4 ? ' …' : ''), m.date, status, m.pages ? t('pages', { n: m.pages }) : '']
     .filter(Boolean)
     .map(esc)
     .join(' · ');

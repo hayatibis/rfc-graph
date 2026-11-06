@@ -69,6 +69,17 @@ export class Sky {
   private calm = false;
   private frame = 0;
   private dirty = true;
+  /** Pixels on the right covered by a panel; the sky centres itself in what's left. */
+  private inset = 0;
+
+  setInset(px: number) {
+    this.inset = px;
+    this.dirty = true;
+  }
+
+  private cx() {
+    return (this.w - this.inset) / 2;
+  }
 
   constructor(private canvas: HTMLCanvasElement, private on: Events) {
     this.ctx = canvas.getContext('2d')!;
@@ -176,7 +187,7 @@ export class Sky {
     if (!xs.length) return;
     const minX = Math.min(...xs.map((s) => s.x ?? 0)), maxX = Math.max(...xs.map((s) => s.x ?? 0));
     const minY = Math.min(...xs.map((s) => s.y ?? 0)), maxY = Math.max(...xs.map((s) => s.y ?? 0));
-    const k = Math.min(1.6, Math.max(0.3, Math.min(this.w / (maxX - minX + 240), this.h / (maxY - minY + 240))));
+    const k = Math.min(1.6, Math.max(0.3, Math.min((this.w - this.inset) / (maxX - minX + 240), this.h / (maxY - minY + 240))));
     this.camAnim = { from: { ...this.cam }, to: { x: (minX + maxX) / 2, y: (minY + maxY) / 2, k }, t0: now(), ms: 900 };
   }
 
@@ -214,7 +225,7 @@ export class Sky {
   // ---- input -------------------------------------------------------------
 
   private toWorld(px: number, py: number) {
-    return { x: (px - this.w / 2) / this.cam.k + this.cam.x, y: (py - this.h / 2) / this.cam.k + this.cam.y };
+    return { x: (px - this.cx()) / this.cam.k + this.cam.x, y: (py - this.h / 2) / this.cam.k + this.cam.y };
   }
 
   private hit(px: number, py: number): Star | null {
@@ -396,7 +407,7 @@ export class Sky {
     g.drawImage(this.texture!, 0, 0);
 
     const k = this.cam.k;
-    g.setTransform(this.dpr * k, 0, 0, this.dpr * k, this.dpr * (this.w / 2 - this.cam.x * k), this.dpr * (this.h / 2 - this.cam.y * k));
+    g.setTransform(this.dpr * k, 0, 0, this.dpr * k, this.dpr * (this.cx() - this.cam.x * k), this.dpr * (this.h / 2 - this.cam.y * k));
 
     const focus = this.hovered ?? this.selected;
     const near = focus !== null ? this.neighbours(focus) : null;
@@ -528,7 +539,7 @@ export class Sky {
     g.textAlign = 'center';
     g.textBaseline = 'top';
     for (const s of this.stars.values()) {
-      const show = k > 0.85 || s.id === this.selected || s.id === this.hovered || (near?.has(s.id) ?? false);
+      const show = (k > 1.15 || (k > 0.85 && this.stars.size < 30)) || s.id === this.selected || s.id === this.hovered || (this.hovered !== null && (near?.has(s.id) ?? false));
       if (!show) continue;
       const a = dim(s.id === focus ? 1 : 0.75, s.id);
       g.font = `${s.id === this.selected ? 600 : 500} ${11 / Math.sqrt(k)}px "IBM Plex Mono", ui-monospace, monospace`;
