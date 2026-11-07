@@ -228,6 +228,8 @@ function renderStatic() {
   $('#tab-story').textContent = t('story');
   $('#tab-read').textContent = t('read');
   $('#fit').textContent = t('fit');
+  $('#reset').textContent = t('reset');
+  $('#reset').title = t('resetHint');
   $('#lang').textContent = state.lang === 'en' ? 'TR' : 'EN';
   $('#theme').setAttribute('aria-label', t('theme'));
   $('#made').textContent = t('made');
@@ -263,6 +265,12 @@ $('#open').addEventListener('submit', (e) => {
   open(Number($<HTMLInputElement>('#rfc-input').value.replace(/\D/g, '')));
 });
 $('#fit').addEventListener('click', () => sky.fit());
+// Start over: an empty sky with only the RFC that's open now.
+$('#reset').addEventListener('click', () => {
+  sky.clear();
+  $('#tip').hidden = true;
+  open(state.current, false);
+});
 $('#zoom-in').addEventListener('click', () => sky.zoomBy(1.25));
 $('#zoom-out').addEventListener('click', () => sky.zoomBy(0.8));
 $('#lang').addEventListener('click', () => {

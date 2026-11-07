@@ -191,6 +191,17 @@ export class Sky {
     this.camAnim = { from: { ...this.cam }, to: { x: (minX + maxX) / 2, y: (minY + maxY) / 2, k }, t0: now(), ms: 900 };
   }
 
+  /** Empties the sky and puts the camera back home. */
+  clear() {
+    this.stars.clear();
+    this.lines.clear();
+    this.selected = null;
+    this.hovered = null;
+    this.camAnim = null;
+    this.cam = { x: 0, y: 0, k: 1 };
+    this.rebuild();
+  }
+
   neighbours(id: number) {
     const out = new Set<number>([id]);
     for (const l of this.lines.values()) {
